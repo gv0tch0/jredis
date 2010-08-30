@@ -109,4 +109,19 @@
       <timezone>UTC-5</timezone>
     </developer>
   </developers>
+  <!-- this is just so we can deploy to the HMS internal maven repository -->
+  <distributionManagement>
+    <repository>
+      <id>hms-repository</id>
+      <name>HMS Repository</name>
+      <url>scpexe://cvs.hmsonline.com/var/www/html/maven2</url>
+      <uniqueVersion>false</uniqueVersion>
+    </repository>
+    <site>
+      <id>hms-build-site</id>
+      <url>scp://cvs.hmsonline.com/var/www/html/build/</url>
+    </site>    
+  </distributionManagement>
+  <!-- for internal deployments - END -->
 </project>
+
