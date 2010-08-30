@@ -2144,6 +2144,7 @@ public abstract class JRedisFutureProviderTestsBase extends JRedisTestSuiteBase<
         }
 	}
 	
+  // TODO - this as well as a lot of other tests are code duplicated (not counting the Future.get() aspect) in JRedisProviderTestBase
 	@Test
 	public void testExpireat() throws InterruptedException {
 		cmd = Command.EXPIREAT.code;
@@ -2153,7 +2154,7 @@ public abstract class JRedisFutureProviderTestsBase extends JRedisTestSuiteBase<
 			String keyToExpire = "expire-me";
 			provider.set(keyToExpire, dataList.get(0)).get();
 
-			Log.log("TEST: %s with expire time 1000 msecs in future", Command.EXPIREAT);
+			Log.log("TEST: %s with expire time 2000 msecs in future", Command.EXPIREAT);
 			assertTrue(provider.expireat(keyToExpire, System.currentTimeMillis() + 2000).get(), "expireat for existing key should be true");
       assertTrue (provider.exists(keyToExpire).get());
 			assertTrue(!provider.expireat("no-such-key", System.currentTimeMillis() + 500).get(), "expireat for non-existant key should be false");
@@ -2162,14 +2163,13 @@ public abstract class JRedisFutureProviderTestsBase extends JRedisTestSuiteBase<
 			// NOTE: IT SIMPLY WON'T WORK WITHOUT GIVING REDIS A CHANCE
 			// could be network latency, or whatever, but the expire command is NOT
 			// that precise, so we need to wait a bit longer
-			
 			Thread.sleep(5000);
-			assertTrue (!provider.exists(keyToExpire).get(), "key should have expired by now");
+			assertTrue(!provider.exists(keyToExpire).get(), "key should have expired by now (I set the expire interval to 2 seconds, ran an exists test which succeeded then slept for 5 seconds which should have been enough for the key to expire and be removed...)");
 		}
-        catch (ExecutionException e) {
-	        e.printStackTrace();
-	        fail(cmd + " FAULT: " + e.getCause().getLocalizedMessage(), e);
-        }
+    catch (ExecutionException e) {
+	    e.printStackTrace();
+	    fail(cmd + " FAULT: " + e.getCause().getLocalizedMessage(), e);
+    }
 	}
 
 }

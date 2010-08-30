@@ -215,16 +215,16 @@ public abstract class JRedisProviderTestsBase extends JRedisTestSuiteBase <JRedi
 			provider.set(keyToExpire, dataList.get(0));
 			assertTrue (provider.exists(keyToExpire));
 			
-			Log.log("TEST: %s with expire time 1000 msecs in future", Command.EXPIREAT);
+			Log.log("TEST: %s with expire time 2000 msecs in future", Command.EXPIREAT);
 			assertTrue(provider.expireat(keyToExpire, System.currentTimeMillis() + 2000), "expireat for existing key should be true");
-      assertTrue (provider.exists(keyToExpire));
+      assertTrue(provider.exists(keyToExpire));
 			assertTrue(!provider.expireat("no-such-key", System.currentTimeMillis() + 500), "expireat for non-existant key should be false");
 			
 			// NOTE: IT SIMPLY WON'T WORK WITHOUT GIVING REDIS A CHANCE
 			// could be network latency, or whatever, but the expire command is NOT
 			// that precise, so we need to wait a bit longer
 			Thread.sleep(5000);
-			assertTrue (!provider.exists(keyToExpire), "key should have expired by now");
+			assertTrue(!provider.exists(keyToExpire), "key should have expired by now (I set the expire interval to 2 seconds, ran an exists test which succeeded then slept for 5 seconds which should have been enough for the key to expire and be removed...)");
 		} 
 		catch (RedisException e) {
 			fail(cmd + " with password: " + password, e);
